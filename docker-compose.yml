@@ -29,6 +29,6 @@ services:
     environment:
       - ENV=dev
     volumes:
-      - ./account:/go/src/app
+      - ./account:/app
     # have to use $$ (double-dollar) so docker doesn't try to substitute a variable
     command: reflex -r "\.go$$" -s -- sh -c "go run ./"
