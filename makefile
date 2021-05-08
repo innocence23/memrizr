@@ -1,4 +1,4 @@
 .PHONY: server
 
 server:
-	go run main.go
+	cd account ** go run main.go
