@@ -1,7 +1,6 @@
-package model
+package apperrors
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 )
@@ -60,8 +59,12 @@ func (e *Error) Status() int {
 // of the error and returns an http
 // status code if the error is model.Error
 func Status(err error) int {
-	var e *Error
-	if errors.As(err, &e) {
+	// var e *Error
+	// if errors.As(err, &e) {
+	// if errors.As(err, &e) {
+	// 	return e.Status()
+	// }
+	if e, ok := err.(*Error); ok {
 		return e.Status()
 	}
 	return http.StatusInternalServerError

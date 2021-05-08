@@ -1,17 +1,23 @@
 package handler
 
 import (
+	"memrizr/model"
 	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	router *gin.Engine
+	Router       *gin.Engine
+	UserService  model.UserService
+	TokenService model.TokenService
 }
 
-func NewServer() *Server {
-	server := &Server{}
+func NewServer(us model.UserService, ts model.TokenService) *Server {
+	server := &Server{
+		UserService:  us,
+		TokenService: ts,
+	}
 	server.setupRouter()
 	return server
 }
@@ -20,22 +26,21 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 	g := router.Group(os.Getenv("ACCOUNT_API_URL"))
 	{
-		h := Account{}
-		g.GET("/me", h.Me)
-		g.POST("/signup", h.Signup)
-		g.POST("/signin", h.Signin)
-		g.POST("/signout", h.Signout)
-		g.POST("/tokens", h.Tokens)
-		g.POST("/image", h.Image)
-		g.DELETE("/image", h.DeleteImage)
-		g.PUT("/details", h.Details)
+		g.GET("/me", server.Me)
+		g.POST("/signup", server.Signup)
+		g.POST("/signin", server.Signin)
+		g.POST("/signout", server.Signout)
+		g.POST("/tokens", server.Tokens)
+		g.POST("/image", server.Image)
+		g.DELETE("/image", server.DeleteImage)
+		g.PUT("/details", server.Details)
 	}
-	server.router = router
+	server.Router = router
 }
 
 // Start runs the HTTP server on a specific address.
 func (server *Server) Start(address string) error {
-	return server.router.Run(address)
+	return server.Router.Run(address)
 }
 
 // func errorResponse(err error) gin.H {

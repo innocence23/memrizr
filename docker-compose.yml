@@ -1,5 +1,14 @@
 version: "3.8"
 services:
+  postgres-account:
+    image: "postgres:12-alpine"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=xaccount
+    ports:
+      - "5432:5432"
+    command: ["postgres", "-c", "log_statement=all"]
   reverse-proxy:
     # The official v2 Traefik docker image
     image: traefik:v2.2
@@ -24,6 +33,10 @@ services:
     env_file: .env.dev
     expose:
       - "8080"
+    depends_on:
+      - postgres-account
+      # - redis-account
+      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.account.rule=Host(`malcorp.test`) && PathPrefix(`/api/account`)"
